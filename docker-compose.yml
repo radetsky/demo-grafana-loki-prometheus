@@ -19,7 +19,10 @@ services:
             - promtail-loki
 
     cadvisor:
-        image: google/cadvisor:v0.33.0
+        image: gcr.io/cadvisor/cadvisor:v0.43.0
+        privileged: true
+        ports: 
+            - "8080:8080"
         volumes:
             - /:/rootfs:ro
             - /var/run:/var/run:ro
@@ -27,10 +30,11 @@ services:
             - /var/lib/docker/:/var/lib/docker:ro
             - /dev/disk/:/dev/disk:ro
         networks:
+            - world
             - prometheus-cadvisor
 
     prometheus:
-        image: prom/prometheus:v2.7.1
+        image: prom/prometheus:v2.32.1
         ports:
             - "9090:9090"
         volumes:
@@ -48,7 +52,7 @@ services:
     grafana:
         depends_on:
             - loki
-        image: grafana/grafana:6.0.0
+        image: grafana/grafana:8.3.3
         ports:
             - "3000:3000"
         environment:
